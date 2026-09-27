@@ -16,6 +16,9 @@
 /public/build
 /public/hot
 /public/storage
+/public/css/filament
+/public/fonts/filament
+/public/js/filament
 /storage/*.key
 /storage/pail
 /vendor
@@ -23,3 +26,4 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 codex_prompt.md
+/docs
