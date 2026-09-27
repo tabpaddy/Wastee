@@ -8,6 +8,6 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Reference-data imports and authorization seeds follow in later phases.
+        $this->call(AuthorizationSeeder::class);
     }
 }
