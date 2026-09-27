@@ -38,4 +38,10 @@ class CompanyMembership extends Model
     {
         return $query->where($this->qualifyColumn('status'), CompanyMembershipStatus::Active);
     }
+
+    public function scopeCurrent(Builder $query): Builder
+    {
+        return $query->active()->where('joined_at', '<=', now())
+            ->where(fn (Builder $query) => $query->whereNull('left_at')->orWhere('left_at', '>', now()));
+    }
 }
