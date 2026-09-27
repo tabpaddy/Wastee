@@ -22,7 +22,7 @@ return new class extends Migration
             foreach ($users as $user) {
                 $parts = explode(' ', $user->name, 2);
                 DB::table('users')->where('id', $user->id)->update([
-                    'uuid' => (string) Str::uuid(), 'first_name' => $parts[0], 'last_name' => $parts[1] ?? '',
+                    'uuid' => (string) Str::uuid7(), 'first_name' => $parts[0], 'last_name' => $parts[1] ?? '',
                 ]);
             }
         });
