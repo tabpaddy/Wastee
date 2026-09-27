@@ -105,7 +105,9 @@ return [
      * Set this to false if you want to implement custom logic for checking permissions.
      */
 
-    'register_permission_check_method' => true,
+    // AppServiceProvider registers a context-aware Gate bridge. Raw package checks
+    // alone cannot validate membership, user/company status, or platform boundaries.
+    'register_permission_check_method' => false,
 
     /*
      * When set to true, Laravel\Octane\Events\OperationTerminated event listener will be registered
