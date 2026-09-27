@@ -2,7 +2,9 @@
 
 namespace App\Services\Auth;
 
+use App\Enums\CompanyStatus;
 use App\Models\Company;
+use App\Models\User;
 use App\Support\PermissionCatalogue;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
@@ -22,6 +24,29 @@ class RoleProvisioner
         DB::transaction(function () use ($company): void {
             Company::query()->whereKey($company->getKey())->lockForUpdate()->firstOrFail();
             $this->provision($company->getKey(), PermissionCatalogue::companyRoles());
+        });
+    }
+
+    public function assignInitialOwner(Company $company, User $owner): void
+    {
+        DB::transaction(function () use ($company, $owner): void {
+            $company = Company::query()->whereKey($company->id)->lockForUpdate()->firstOrFail();
+            abort_unless($company->status === CompanyStatus::Draft
+                && $company->owner_user_id === $owner->id
+                && app(CompanyAccess::class)->isActiveUser($owner)
+                && $company->memberships()->current()->where('user_id', $owner->id)->exists(), 403);
+            // Provisioning is not operational authorization. Restore only a trusted service context.
+            $previous = app(AuthorizationContext::class)->teamId();
+            try {
+                setPermissionsTeamId($company->id);
+                $owner->unsetRelation('roles')->unsetRelation('permissions');
+                $owner->assignRole(Role::query()->where('company_id', $company->id)
+                    ->where('name', 'Owner')->where('guard_name', 'web')->sole());
+            } finally {
+                $owner->unsetRelation('roles')->unsetRelation('permissions');
+                setPermissionsTeamId($previous);
+                app(PermissionRegistrar::class)->forgetCachedPermissions();
+            }
         });
     }
 

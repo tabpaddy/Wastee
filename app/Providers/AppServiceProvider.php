@@ -7,8 +7,10 @@ use App\Policies\PermissionPolicy;
 use App\Policies\RolePolicy;
 use App\Services\Auth\AuthorizationContext;
 use App\Support\PermissionCatalogue;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -28,6 +30,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        VerifyEmail::createUrlUsing(fn (User $user) => URL::temporarySignedRoute('verification.verify', now()->addMinutes(60),
+            ['id' => $user->uuid, 'hash' => sha1($user->getEmailForVerification())]));
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(Permission::class, PermissionPolicy::class);
 

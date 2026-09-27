@@ -29,6 +29,13 @@ return [
     */
 
     'disks' => [
+        'company_documents' => [
+            'driver' => 'local',
+            'root' => storage_path('app/company-documents'),
+            'visibility' => 'private',
+            'serve' => false,
+            'throw' => true,
+        ],
 
         'local' => [
             'driver' => 'local',
