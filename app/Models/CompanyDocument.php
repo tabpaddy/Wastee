@@ -6,6 +6,7 @@ use App\Enums\CompanyDocumentType;
 use App\Enums\DocumentReviewStatus;
 use App\Models\Concerns\BelongsToCompany;
 use App\Models\Concerns\HasPublicUuid;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -34,6 +35,12 @@ class CompanyDocument extends Model
             'status' => DocumentReviewStatus::class,
             'reviewed_at' => 'immutable_datetime',
         ];
+    }
+
+    public function scopeLatestOfEachType(Builder $query): Builder
+    {
+        return $query->whereIn('company_documents.id', static::query()
+            ->selectRaw('MAX(id)')->groupBy('company_id', 'document_type'));
     }
 
     public function reviewer(): BelongsTo

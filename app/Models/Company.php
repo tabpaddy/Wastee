@@ -130,6 +130,17 @@ class Company extends Model
         return $this->belongsTo(User::class, 'approved_by');
     }
 
+    public function scopeOwnedBy(Builder $query, User $owner): Builder
+    {
+        return $query->where('owner_user_id', $owner->id);
+    }
+
+    public function scopeForReviewerQueue(Builder $query): Builder
+    {
+        return $query->with(['owner', 'locations' => fn ($q) => $q->current()->where('is_head_office', true),
+            'documents' => fn ($q) => $q->latestOfEachType()]);
+    }
+
     public function scopeApproved(Builder $query): Builder
     {
         return $query->where('status', CompanyStatus::Approved);
