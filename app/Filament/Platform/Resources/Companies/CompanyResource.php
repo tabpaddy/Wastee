@@ -2,6 +2,7 @@
 
 namespace App\Filament\Platform\Resources\Companies;
 
+use App\Filament\Concerns\UsesPublicRecordUrls;
 use App\Models\Company;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Gate;
 
 class CompanyResource extends Resource
 {
+    use UsesPublicRecordUrls;
+
     protected static ?string $model = Company::class;
 
     protected static ?string $recordRouteKeyName = 'uuid';

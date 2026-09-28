@@ -25,7 +25,9 @@ class CompanyRegistrationService
                 $data = Validator::make($input, CompanyOnboardingRequirements::profileRules())->validate();
                 $company = Company::create([...$data, 'owner_user_id' => $owner->id,
                     'slug' => Str::slug($data['name']).'-'.Str::uuid7(), 'status' => CompanyStatus::Draft]);
-                $company->memberships()->create(['user_id' => $owner->id, 'joined_at' => now()]);
+                $ownerMembership = $company->memberships()->create(['user_id' => $owner->id, 'joined_at' => now()]);
+                $ownerMembership->periods()->create(['joined_at' => $ownerMembership->joined_at,
+                    'joined_by' => $owner->id, 'join_reason' => 'Company registration', 'joined_roles' => ['Owner']]);
                 app(RoleProvisioner::class)->seedCompany($company);
                 app(RoleProvisioner::class)->assignInitialOwner($company, $owner);
                 $company->settings()->create([]);
