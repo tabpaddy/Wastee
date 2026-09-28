@@ -27,6 +27,11 @@ final class PermissionCatalogue
             'complaints.view', 'complaints.assign', 'complaints.resolve', 'reports.view'];
     }
 
+    public static function groupedCompanyPermissions(): array
+    {
+        return collect(self::company())->groupBy(fn (string $permission) => explode('.', $permission)[0])->toArray();
+    }
+
     public static function platformRoles(): array
     {
         return [

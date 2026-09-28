@@ -30,7 +30,7 @@ class RolePolicy
 
     public function update(User $user, Role $role): bool
     {
-        return $this->belongsToContext($role) && $role->name !== 'Owner'
+        return $this->belongsToContext($role) && ! in_array($role->name, array_keys(PermissionCatalogue::companyRoles()), true)
             && $this->context->allowsCompany($user, 'roles.update') && $this->canGrantContents($user, $role);
     }
 
@@ -41,6 +41,15 @@ class RolePolicy
             && $recipient->user_id !== $this->context->company()?->owner_user_id
             && CompanyMembership::query()->current()->whereKey($recipient->getKey())->exists()
             && $this->context->allowsCompany($user, 'roles.assign') && $this->canGrantContents($user, $role);
+    }
+
+    public function invite(User $user, Role $role): bool
+    {
+        return $this->belongsToContext($role) && $role->name !== 'Owner'
+            && $this->context->allowsCompany($user, 'staff.invite')
+            && $this->context->allowsCompany($user, 'staff.update')
+            && $this->context->allowsCompany($user, 'roles.assign')
+            && $this->canGrantContents($user, $role);
     }
 
     public function assignPermission(User $user, Role $role, Permission $permission): bool
