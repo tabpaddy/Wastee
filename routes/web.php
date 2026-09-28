@@ -3,6 +3,7 @@
 use App\Http\Controllers\Onboarding\CompanyDocumentController;
 use App\Http\Controllers\Onboarding\CompanyOnboardingController;
 use App\Http\Controllers\Onboarding\OwnerAuthController;
+use App\Http\Controllers\StaffInvitationController;
 use App\Http\Middleware\SetPlatformContext;
 use Illuminate\Support\Facades\Route;
 
@@ -34,4 +35,11 @@ Route::middleware('auth')->group(function (): void {
         ->whereUuid(['company', 'document'])->scopeBindings()->name('onboarding.download');
     Route::get('/platform-review/{company:uuid}/documents/{document:uuid}', CompanyDocumentController::class)
         ->middleware(SetPlatformContext::class)->whereUuid(['company', 'document'])->scopeBindings()->name('platform.documents.download');
+});
+
+Route::prefix('staff-invitations')->name('staff-invitations.')->middleware('throttle:30,1')->group(function (): void {
+    Route::get('/{invitation:uuid}/{token}', [StaffInvitationController::class, 'open'])
+        ->whereUuid('invitation')->where('token', '[A-Za-z0-9]{64}')->name('open');
+    Route::get('/{invitation:uuid}', [StaffInvitationController::class, 'show'])->whereUuid('invitation')->name('show');
+    Route::post('/{invitation:uuid}', [StaffInvitationController::class, 'accept'])->whereUuid('invitation')->name('accept');
 });

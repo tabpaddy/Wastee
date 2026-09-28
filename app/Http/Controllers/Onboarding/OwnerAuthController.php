@@ -30,6 +30,10 @@ class OwnerAuthController extends Controller
         }
         $request->session()->regenerate();
 
+        if ($invitationUuid = $request->session()->get('staff_invitation_uuid')) {
+            return redirect()->route('staff-invitations.show', $invitationUuid);
+        }
+
         return redirect()->route('onboarding.index');
     }
 
