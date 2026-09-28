@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -32,6 +33,9 @@ class AppServiceProvider extends ServiceProvider
     {
         VerifyEmail::createUrlUsing(fn (User $user) => URL::temporarySignedRoute('verification.verify', now()->addMinutes(60),
             ['id' => $user->uuid, 'hash' => sha1($user->getEmailForVerification())]));
+        Role::creating(function (Role $role): void {
+            $role->uuid ??= (string) Str::uuid7();
+        });
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(Permission::class, PermissionPolicy::class);
 
