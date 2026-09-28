@@ -7,6 +7,7 @@ use App\Models\Concerns\BelongsToCompany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CompanyMembership extends Model
 {
@@ -32,6 +33,21 @@ class CompanyMembership extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function periods(): HasMany
+    {
+        return $this->hasMany(CompanyMembershipPeriod::class);
+    }
+
+    public function getUserUuidAttribute(): string
+    {
+        return $this->user->uuid;
+    }
+
+    public function scopeForStaffList(Builder $query, int $companyId): Builder
+    {
+        return $query->where('company_id', $companyId)->with(['user.roles' => fn ($roles) => $roles->where('roles.company_id', $companyId)->where('model_has_roles.company_id', $companyId)]);
     }
 
     public function scopeActive(Builder $query): Builder

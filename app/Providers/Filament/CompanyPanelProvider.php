@@ -2,6 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Company\Resources\Invitations\InvitationResource;
+use App\Filament\Company\Resources\Roles\RoleResource;
+use App\Filament\Company\Resources\Staff\StaffResource;
 use App\Http\Middleware\AuthenticatePanel;
 use App\Http\Middleware\SetCompanyContext;
 use App\Models\Company;
@@ -33,6 +36,11 @@ class CompanyPanelProvider extends PanelProvider
             ->colors(['primary' => Color::Emerald])
             ->tenant(Company::class, slugAttribute: 'uuid', ownershipRelationship: 'company')
             ->pages([Dashboard::class])
+            ->resources([
+                StaffResource::class,
+                RoleResource::class,
+                InvitationResource::class,
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

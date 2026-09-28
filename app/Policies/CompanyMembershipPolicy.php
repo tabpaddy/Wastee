@@ -37,6 +37,17 @@ class CompanyMembershipPolicy
             && $this->context->allowsCompany($user, 'staff.deactivate');
     }
 
+    public function suspend(User $user, CompanyMembership $membership): bool
+    {
+        return $this->isManageable($membership) && $membership->user_id !== $user->id
+            && $this->context->allowsCompany($user, 'staff.update');
+    }
+
+    public function reactivate(User $user, CompanyMembership $membership): bool
+    {
+        return $this->suspend($user, $membership);
+    }
+
     private function isManageable(CompanyMembership $membership): bool
     {
         return $membership->company_id === $this->context->companyId()
