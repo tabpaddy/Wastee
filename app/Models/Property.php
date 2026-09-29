@@ -73,4 +73,14 @@ class Property extends Model
     {
         return $query->where($this->qualifyColumn('status'), PropertyStatus::Active);
     }
+
+    public function scopeCurrentlyServedBy(Builder $query, int $companyId): Builder
+    {
+        return $query->whereHas('providerAssignments', fn (Builder $assignments) => $assignments->forCompany($companyId)->current());
+    }
+
+    public function scopeVisibleToCompany(Builder $query, int $companyId): Builder
+    {
+        return $query->whereHas('providerAssignments', fn (Builder $assignments) => $assignments->forCompany($companyId)->where('assigned_from', '<=', today()));
+    }
 }
