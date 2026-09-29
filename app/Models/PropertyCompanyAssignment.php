@@ -3,15 +3,23 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToCompany;
+use App\Models\Concerns\HasTemporalOverlap;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PropertyCompanyAssignment extends Model
 {
-    use BelongsToCompany;
+    use BelongsToCompany, HasTemporalOverlap;
+
+    protected const PERIOD_START = 'assigned_from';
+
+    protected const PERIOD_END = 'assigned_to';
 
     protected $fillable = [
+        'ended_by',
+        'end_reason',
+
         'property_id',
         'company_id',
         'assigned_from',
@@ -45,5 +53,10 @@ class PropertyCompanyAssignment extends Model
         return $query
             ->where(fn (Builder $q) => $q->whereDate('assigned_from', '<=', $on))
             ->where(fn (Builder $q) => $q->whereNull('assigned_to')->orWhereDate('assigned_to', '>', $on));
+    }
+
+    public function endedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'ended_by');
     }
 }
