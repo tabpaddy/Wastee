@@ -22,6 +22,8 @@ class RoleResource extends Resource
 
     protected static bool $isScopedToTenant = false;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Administration';
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->where('company_id', app(AuthorizationContext::class)->companyId() ?? -1)

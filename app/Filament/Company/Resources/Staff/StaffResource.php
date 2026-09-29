@@ -20,13 +20,13 @@ class StaffResource extends Resource
 
     protected static ?string $slug = 'staff';
 
-    use UsesPublicRecordUrls;
-
     protected static ?string $modelLabel = 'staff member';
 
     protected static ?string $recordRouteKeyName = 'user_uuid';
 
     protected static bool $isScopedToTenant = false;
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Administration';
 
     public static function getEloquentQuery(): Builder
     {
