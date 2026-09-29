@@ -26,4 +26,5 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 codex_prompt.md
-/docs
+/docs/*
+!/docs/phase-*-review.md

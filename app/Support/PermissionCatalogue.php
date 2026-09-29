@@ -10,7 +10,7 @@ final class PermissionCatalogue
     {
         return ['platform.access', 'platform.companies.view', 'platform.companies.review',
             'platform.companies.suspend', 'platform.users.view', 'platform.users.manage',
-            'platform.roles.manage', 'platform.reports.view'];
+            'platform.roles.manage', 'platform.reports.view', 'platform.geography.view', 'platform.geography.manage'];
     }
 
     public static function company(): array
@@ -20,6 +20,7 @@ final class PermissionCatalogue
             'roles.view', 'roles.create', 'roles.update', 'roles.assign',
             'residents.view', 'residents.create', 'residents.update',
             'properties.view', 'properties.create', 'properties.update',
+            'service-areas.view', 'service-areas.manage',
             'service-plans.view', 'service-plans.create', 'service-plans.update',
             'billing.view', 'billing.create', 'billing.issue',
             'payments.view', 'payments.record', 'payments.verify',
@@ -37,13 +38,13 @@ final class PermissionCatalogue
         return [
             self::PLATFORM_SUPER_ADMIN => self::platform(),
             'Platform Admin' => ['platform.access', 'platform.companies.view',
-                'platform.companies.review', 'platform.users.view', 'platform.reports.view'],
+                'platform.companies.review', 'platform.users.view', 'platform.reports.view', 'platform.geography.view'],
         ];
     }
 
     public static function companyRoles(): array
     {
-        $basic = ['company.access', 'company.view'];
+        $basic = ['company.access', 'company.view', 'service-areas.view'];
 
         return [
             'Owner' => self::company(),

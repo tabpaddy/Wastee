@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Platform\Resources\Communities\CommunityResource;
 use App\Filament\Platform\Resources\Companies\CompanyResource;
 use App\Http\Middleware\AuthenticatePanel;
 use App\Http\Middleware\SetPlatformContext;
@@ -33,7 +34,7 @@ class PlatformPanelProvider extends PanelProvider
             ->authGuard('web')
             ->colors(['primary' => Color::Indigo])
             ->pages([Dashboard::class])
-            ->resources([CompanyResource::class])
+            ->resources([CompanyResource::class, CommunityResource::class])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

@@ -3,7 +3,10 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Company\Resources\Invitations\InvitationResource;
+use App\Filament\Company\Resources\Properties\PropertyResource;
+use App\Filament\Company\Resources\Residents\ResidentResource;
 use App\Filament\Company\Resources\Roles\RoleResource;
+use App\Filament\Company\Resources\ServiceAreas\ServiceAreaResource;
 use App\Filament\Company\Resources\Staff\StaffResource;
 use App\Http\Middleware\AuthenticatePanel;
 use App\Http\Middleware\SetCompanyContext;
@@ -37,6 +40,9 @@ class CompanyPanelProvider extends PanelProvider
             ->tenant(Company::class, slugAttribute: 'uuid', ownershipRelationship: 'company')
             ->pages([Dashboard::class])
             ->resources([
+                ServiceAreaResource::class,
+                PropertyResource::class,
+                ResidentResource::class,
                 StaffResource::class,
                 RoleResource::class,
                 InvitationResource::class,
