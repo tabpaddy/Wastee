@@ -59,4 +59,20 @@ class Resident extends Model
     {
         return $query->where($this->qualifyColumn('status'), ResidentStatus::Active);
     }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->first_name.' '.$this->last_name;
+    }
+
+    public function scopeCurrentlyServedBy(Builder $query, int $companyId): Builder
+    {
+        return $query->whereHas('occupancies', fn (Builder $occupancies) => $occupancies->current()
+            ->whereHas('property', fn (Builder $properties) => $properties->currentlyServedBy($companyId)));
+    }
+
+    public function scopeVisibleToCompany(Builder $query, int $companyId): Builder
+    {
+        return $query->whereHas('occupancies', fn (Builder $occupancies) => $occupancies->visibleToCompany($companyId));
+    }
 }
